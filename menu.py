@@ -1,5 +1,5 @@
-import curses
-import time 
+import curses, time
+from snake import Game
 
 class Menu():
     """
@@ -56,7 +56,8 @@ def main(stdscr):
             stdscr.refresh()
             if current_row == len(menu) - 1:
                 break
-
+            if current_row == 0:
+                game = Game(20,60) 
         print_menu(stdscr,current_row)
                
         stdscr.refresh()
