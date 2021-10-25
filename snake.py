@@ -1,17 +1,9 @@
 """
 TODO:
-    Add sound effects on eating food and background music.
-
-    Add a menu with a difficulty option and set the game's speed (easy, medium, hard) at the beggining
-
     Add walls on harder levels.
 """
 
-<<<<<<< HEAD
 import curses,random,pygame,os,time
-=======
-import curses,random,pygame
->>>>>>> menu
 from ds import Node, LinkedList
 
 class Game():
@@ -27,11 +19,7 @@ class Game():
         
         self.rows = rows
         self.cols = cols
-<<<<<<< HEAD
         
-=======
-
->>>>>>> menu
         self.pygame_setup()
         self.graphics_setup()
         self.game_loop()
@@ -46,14 +34,6 @@ class Game():
         music = pygame.mixer.music.load(os.path.join('music.ogg'))
         pygame.mixer.music.play(-1)
 
-    def pygame_setup(self):
-        pygame.init()
-        pygame.font.init()
-        pygame.mixer.init()
-        s = "sound"
-        food_eaten = pygame.mixer.Sound(r"apple.ogg")
-        music = pygame.mixer.music.load(r"music.ogg")
-        
     def graphics_setup(self):
         curses.initscr()
         self.win = curses.newwin(self.rows,self.cols,0,0) # y, x
@@ -133,7 +113,7 @@ class Game():
             self.win.addch(self.food[0], self.food[1], '#')
         
         curses.endwin()
-        print(f"Final score = {score}")
+
 
 def main():
     game = Game(20,60)
