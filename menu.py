@@ -1,11 +1,9 @@
-import curses,os,time
+import curses,os,time,pygame
 from snake import Game
 
-import curses, pygame
 
 class Menu():
     """
-    DOCSTRING!:
     A menu to control difficulty via levels and snake speed.
     Added option to turn on/off music and SFX.l
     """
@@ -77,7 +75,8 @@ class MainMenu(Menu):
                     pygame.mixer.music.play(-1)
                     
                 elif self.current_row == 1:
-                   diff = DifficultyMenu() 
+                    diff = DifficultyMenu() 
+                    diff.minimain(stdscr)
 
             self._print_menu(stdscr)
  
@@ -105,7 +104,7 @@ class DifficultyMenu(Menu):
             elif key == curses.KEY_ENTER or key in [10,13]:
                 #Functions for changing the menu here:
                 if self.current_row == len(self.menu) - 1:
-                    back = MainMenu(self.main_menu)
+                    break
                 elif self.current_row == 0:
                     #medium difficulty
                     pass 

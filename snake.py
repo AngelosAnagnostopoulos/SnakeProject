@@ -41,7 +41,7 @@ class Game():
         self.win.border(0)
         self.win.nodelay(1)
 
-    def at_border(self,x,y):
+    def at_border(self,x: int,y: int):
         #Check if we hit the border and wrap around
         temp_x = x
         temp_y = y
