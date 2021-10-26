@@ -29,10 +29,8 @@ class Game():
         pygame.font.init()
         pygame.mixer.init()
         s = "sound"
-        self.food_sound = pygame.mixer.Sound(os.path.join('food.ogg'))
-        self.defeat_sound = pygame.mixer.Sound(os.path.join('defeat.ogg'))
-        music = pygame.mixer.music.load(os.path.join('music.ogg'))
-        pygame.mixer.music.play(-1)
+        self.food_sound = pygame.mixer.Sound(os.path.join('sounds/food.ogg'))
+        self.defeat_sound = pygame.mixer.Sound(os.path.join('sounds/defeat.ogg'))
 
     def graphics_setup(self):
         curses.initscr()
@@ -113,7 +111,6 @@ class Game():
             self.win.addch(self.food[0], self.food[1], '#')
         
         curses.endwin()
-
 
 def main():
     game = Game(20,60)
