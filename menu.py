@@ -1,8 +1,8 @@
 import curses,os,time,pygame
 from snake import Game
+from abc import ABC, abstractmethod
 
-
-class Menu():
+class Menu(ABC):
     """
     A menu to control difficulty via levels and snake speed.
     Added option to turn on/off music and SFX.l
@@ -37,6 +37,7 @@ class Menu():
 
         stdscr.refresh()
 
+    @abstractmethod
     def minimain(self,stdscr):
         pass
 
