@@ -1,4 +1,7 @@
-import curses,os,time,pygame
+#The menu redrawing implementation with states is hideous but at least it works
+
+import curses,os,time,pygame.mixer
+import audio
 from snake import Game
 from abc import ABC, abstractmethod
 
@@ -7,18 +10,13 @@ class Menu(ABC):
     A menu to control difficulty via levels and snake speed.
     Added option to turn on/off music and SFX.l
     """
-    main_menu = ["Play","Difficulty","Music","Exit"]
-    difficulty_menu = ["Medium","Hard","Walls","Back"]
-    music_menu = ["Music", "SFX","Back"]
+    main_menu = ["Play","Walls off","Audio","Exit"]
+    music_menu = ["Music off", "SFX on","Back"]
  
     def __init__(self):
         self.current_row = 0 
         self.menu = []
-        pygame.init()
         pygame.mixer.init()
-        pygame.font.init()
-        music = pygame.mixer.music.load(os.path.join('sounds/music.ogg'))       
-        self.music_state = "off"
 
     def _print_menu(self, stdscr):
         stdscr.clear()
@@ -47,6 +45,7 @@ class MainMenu(Menu):
     def __init__(self):
         super().__init__()
         self.menu = Menu.main_menu
+        self.walls_state = "off"
 
     def minimain(self,stdscr):
         curses.curs_set(0)
@@ -68,25 +67,27 @@ class MainMenu(Menu):
                     break
                 elif self.current_row == 0:
                     game = Game(20,60) 
-                elif self.current_row == 2 and self.music_state == "on":
-                    self.music_state = "off"
-                    pygame.mixer.music.stop()
-                elif self.current_row == 2 and self.music_state == "off":
-                    self.music_state = "on"
-                    pygame.mixer.music.play(-1)
-                    
-                elif self.current_row == 1:
-                    diff = DifficultyMenu() 
-                    diff.minimain(stdscr)
-
+                elif self.current_row == 1 and self.walls_state == "off":
+                #Implement walls logic in game
+                    self.walls_state = "on"
+                    Menu.main_menu[1] = "Walls On"
+                elif self.current_row == 1 and self.walls_state == "on":
+                    self.walls_state = "off"
+                    Menu.main_menu[1] = "Walls Off"
+                elif self.current_row == 2:
+                    audio = AudioMenu()
+                    audio.minimain(stdscr)     
+            
             self._print_menu(stdscr)
  
-
-class DifficultyMenu(Menu):
+class AudioMenu(Menu):
 
     def __init__(self):
         super().__init__()
-        self.menu = Menu.difficulty_menu
+        self.menu = Menu.music_menu
+        self.music_state = "off"
+        self.sfx_state = "on"
+        self.window = curses.newwin(10,10,10,50)
 
     def minimain(self,stdscr):
         curses.curs_set(0)
@@ -106,18 +107,30 @@ class DifficultyMenu(Menu):
                 #Functions for changing the menu here:
                 if self.current_row == len(self.menu) - 1:
                     break
-                elif self.current_row == 0:
-                    #medium difficulty
-                    pass 
-                elif self.current_row == 1:
-                    #hard difficulty
-                    pass
-                elif self.current_row == 2:
-                    #walls on/off
-                    pass
+                elif self.current_row == 0 and self.music_state == "off":
+                    self.music_state = "on"
+                    Menu.music_menu[0] = "Music On"
+                    pygame.mixer.music.play(-1)
+
+                elif self.current_row == 0 and self.music_state == "on":
+                    self.music_state = "off"
+                    Menu.music_menu[0] = "Music Off"
+                    pygame.mixer.music.stop()
+                
+                elif self.current_row == 1 and self.sfx_state == "off":
+                    self.sfx_state = "on"
+                    Menu.music_menu[1] = "SFX On"
+                    audio.food_sound_ptr = audio.food_sound
+                    audio.defeat_sound_ptr = audio.defeat_sound
+
+                elif self.current_row == 1 and self.sfx_state == "on":
+                    self.sfx_state = "off"
+                    Menu.music_menu[1] = "SFX Off"
+                    audio.food_sound_ptr = None 
+                    audio.defeat_sound_ptr = None 
 
             self._print_menu(stdscr)
-            stdscr.refresh()
+
 
 
 def main(stdscr):

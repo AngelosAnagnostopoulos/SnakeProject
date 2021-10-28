@@ -3,7 +3,7 @@ TODO:
     Add walls on harder levels.
 """
 
-import curses,random,pygame,os,time
+import curses,random,pygame,os,time,audio
 from ds import Node, LinkedList
 
 class Game():
@@ -20,18 +20,9 @@ class Game():
         self.rows = rows
         self.cols = cols
         
-        self.pygame_setup()
         self.graphics_setup()
         self.game_loop()
   
-    def pygame_setup(self):
-        pygame.init()
-        pygame.font.init()
-        pygame.mixer.init()
-        s = "sound"
-        self.food_sound = pygame.mixer.Sound(os.path.join('sounds/food.ogg'))
-        self.defeat_sound = pygame.mixer.Sound(os.path.join('sounds/defeat.ogg'))
-
     def graphics_setup(self):
         curses.initscr()
         self.win = curses.newwin(self.rows,self.cols,0,0) # y, x
@@ -91,12 +82,19 @@ class Game():
             self.at_border(x,y)   
 
             if self.snake.head.data in self.snake.values():
-                pygame.mixer.Sound.play(self.defeat_sound)
+            	#This has got to be the worst thing that's ever happened to coding since C#
+                try:
+                    pygame.mixer.Sound.play(audio.defeat_sound_ptr)
+                except TypeError:
+                    pass
                 time.sleep(1)
                 break
             if self.snake.head.data == self.food:
                 score += 1
-                pygame.mixer.Sound.play(self.food_sound)
+                try:
+                    pygame.mixer.Sound.play(audio.food_sound_ptr)
+                except TypeError:
+                    pass
                 self.food = ()
                 while self.food == ():
                     self.food = (random.randint(2,self.rows-2),random.randint(2,self.cols-2))
